@@ -11,6 +11,7 @@ import { api } from "../../convex/_generated/api";
 import { toast } from "sonner";
 import { Plus, Upload, X } from "lucide-react";
 import { Id } from "../../convex/_generated/dataModel";
+import { Button } from "./ui/button";
 
 interface Tag {
   _id: Id<"tags">;
@@ -234,13 +235,15 @@ export function NoteForm({ tags }: NoteFormProps) {
             onChange={e => setTitle(e.target.value)}
             className="flex-1 px-4 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
           />
-          <button
+          <Button
             type="submit"
             disabled={!title.trim()}
-            className="px-6 py-3 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white rounded-lg font-medium transition-colors self-start"
+            variant="default"
+            size="default"
+            className="self-start"
           >
-            Create Note
-          </button>
+            Tạo ghi chú
+          </Button>
         </div>
         {/* Description toggle & input (chỉ hiển thị khi đã nhập title) */}
         {title.trim() && (
@@ -275,13 +278,15 @@ export function NoteForm({ tags }: NoteFormProps) {
                   alt={`Preview ${idx+1}`}
                   className="max-w-xs max-h-48 rounded-lg border border-gray-200"
                 />
-                <button
+                <Button
                   type="button"
                   onClick={() => removeImageAt(idx)}
-                  className="absolute -top-2 -right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-1 transition-colors"
+                  variant="destructive"
+                  size="sm"
+                  className="absolute -top-2 -right-2 rounded-full p-1 h-6 w-6"
                 >
                   <X className="w-4 h-4" />
-                </button>
+                </Button>
               </div>
             ))}
           </div>
@@ -295,7 +300,7 @@ export function NoteForm({ tags }: NoteFormProps) {
               className="group relative"
               tabIndex={0}
             >
-              <button
+              <Button
                 type="button"
                 onClick={() => {
                   setShowQuickTagInput((prev) => {
@@ -308,30 +313,34 @@ export function NoteForm({ tags }: NoteFormProps) {
                     return next;
                   });
                 }}
-                className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+                variant="outline"
+                size="default"
+                className="flex items-center gap-2"
               >
                 <Plus className="w-4 h-4" />
-                Add Tag
-              </button>
+                Thêm thẻ
+              </Button>
               {showQuickTagInput && (
                 <div
                   className="absolute top-full left-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-lg p-3 z-10 min-w-[220px]"
                   onMouseDown={e => e.stopPropagation()}
                 >
                   <div className="mb-2">
-                    <div className="font-medium text-gray-700 mb-1">Tags:</div>
+                    <div className="font-medium text-gray-700 mb-1">Thẻ:</div>
                     <div className="flex gap-2 flex-wrap mb-2">
-                      {tags.length === 0 && <span className="text-gray-400 text-sm">No tags yet</span>}
+                      {tags.length === 0 && <span className="text-gray-400 text-sm">Chưa có thẻ nào</span>}
                       {tags.map(tag => (
-                        <button
+                        <Button
                           key={tag._id}
                           type="button"
                           onClick={() => { toggleTag(tag.name); setShowQuickTagInput(false); }}
+                          variant="ghost"
+                          size="sm"
                           className={`px-3 py-1 rounded-full text-sm font-medium transition-all ${selectedTags.includes(tag.name) ? "ring-2 ring-offset-1" : "hover:scale-105"}`}
                           style={{ backgroundColor: tag.color + "20", color: tag.color, border: `1px solid ${tag.color}` }}
                         >
                           {tag.name}
-                        </button>
+                        </Button>
                       ))}
                     </div>
                   </div>
@@ -339,20 +348,22 @@ export function NoteForm({ tags }: NoteFormProps) {
                     <input
                       ref={inputTagRef}
                       type="text"
-                      placeholder="Create new tag"
+                      placeholder="Tạo thẻ mới"
                       value={quickTagName}
                       onChange={(e) => setQuickTagName(e.target.value)}
                       className="w-full px-3 py-2 text-sm rounded border border-gray-200 focus:border-blue-500 focus:ring-1 focus:ring-blue-200 outline-none"
                       autoFocus
                     />
-                    <button
+                    <Button
                       type="button"
                       disabled={!quickTagName.trim()}
-                      className="w-full px-3 py-1 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white text-sm rounded transition-colors"
+                      variant="default"
+                      size="sm"
+                      className="w-full text-sm"
                       onClick={handleQuickTagCreate}
                     >
-                      Create Tag
-                    </button>
+                      Tạo thẻ
+                    </Button>
                   </form>
                 </div>
               )}
@@ -369,33 +380,39 @@ export function NoteForm({ tags }: NoteFormProps) {
             className="hidden"
             disabled={selectedImages.length >= 5}
           />
-          <button
+          <Button
             type="button"
             onClick={() => fileInputRef.current?.click()}
-            className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+            variant="outline"
+            size="default"
+            className="flex items-center gap-2"
             disabled={selectedImages.length >= 5}
           >
             <Upload className="w-4 h-4" />
-            {selectedImages.length >= 5 ? "Max 5 Images" : "Add Image"}
-          </button>
+            {selectedImages.length >= 5 ? "Tối đa 5 ảnh" : "Thêm ảnh"}
+          </Button>
           {/* Google Drive Button */}
-          <button
+          <Button
             type="button"
-            className="flex items-center gap-2 px-4 py-2 bg-green-100 hover:bg-green-200 rounded-lg transition-colors"
+            variant="outline"
+            size="default"
+            className="flex items-center gap-2 bg-green-50 hover:bg-green-100 border-green-200"
             onClick={handleGoogleDriveClick}
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="20" height="20"><path fill="#2196F3" d="M17.7 8.1L24 19.1 30.3 8.1z"/><path fill="#4CAF50" d="M6 40h36l-6-10H12z"/><path fill="#FFC107" d="M41.7 38.1L30.3 8.1 24 19.1z"/><path fill="#FF3D00" d="M6.3 38.1L17.7 8.1 24 19.1z"/></svg>
             Google Drive
-          </button>
+          </Button>
           {/* Camera Button */}
-          <button
+          <Button
             type="button"
-            className="flex items-center gap-2 px-4 py-2 bg-pink-100 hover:bg-pink-200 rounded-lg transition-colors"
+            variant="outline"
+            size="default"
+            className="flex items-center gap-2 bg-pink-50 hover:bg-pink-100 border-pink-200"
             onClick={handleCameraClick}
           >
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20"><path fill="#E91E63" d="M12 17a4.978 4.978 0 0 1-4.9-4H5a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1h2.1l.83-1.66A1 1 0 0 1 8.83 5h6.34a1 1 0 0 1 .9.34L17.9 7H20a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1h-2.1a4.978 4.978 0 0 1-4.9 4zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg>
-            Camera
-          </button>
+            Máy ảnh
+          </Button>
 
           {/* Selected Tags Display */}
           <div className="flex gap-2 flex-wrap">
@@ -422,13 +439,15 @@ export function NoteForm({ tags }: NoteFormProps) {
         {/* Tag Selector */}
         {showTagSelector && (
           <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-            <h4 className="font-medium text-gray-700 mb-3">Select Tags:</h4>
+            <h4 className="font-medium text-gray-700 mb-3">Chọn thẻ:</h4>
             <div className="flex gap-2 flex-wrap">
               {tags.map(tag => (
-                <button
+                <Button
                   key={tag._id}
                   type="button"
                   onClick={() => toggleTag(tag.name)}
+                  variant="ghost"
+                  size="sm"
                   className={`px-3 py-1 rounded-full text-sm font-medium transition-all ${
                     selectedTags.includes(tag.name)
                       ? "ring-2 ring-offset-1"
@@ -441,7 +460,7 @@ export function NoteForm({ tags }: NoteFormProps) {
                   }}
                 >
                   {tag.name}
-                </button>
+                </Button>
               ))}
             </div>
           </div>

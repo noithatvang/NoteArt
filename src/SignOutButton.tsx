@@ -1,21 +1,34 @@
 "use client";
 import { useAuthActions } from "@convex-dev/auth/react";
 import { useConvexAuth } from "convex/react";
+import { useNavigate } from "react-router-dom";
+import { Button } from "./components/ui/button";
 
 export function SignOutButton() {
   const { isAuthenticated } = useConvexAuth();
   const { signOut } = useAuthActions();
+  const navigate = useNavigate();
 
   if (!isAuthenticated) {
     return null;
   }
 
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      // Navigate to homepage after successful signout
+      navigate('/');
+    } catch (error) {
+      console.error('Sign out error:', error);
+    }
+  };
+
   return (
-    <button
-      className="px-4 py-2 rounded bg-white text-secondary border border-gray-200 font-semibold hover:bg-gray-50 hover:text-secondary-hover transition-colors shadow-sm hover:shadow"
-      onClick={() => void signOut()}
+    <Button
+      variant="outline"
+      onClick={handleSignOut}
     >
       Sign out
-    </button>
+    </Button>
   );
 }

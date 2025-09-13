@@ -6,6 +6,7 @@ import { Edit2, Trash2, Calendar, Sparkles } from "lucide-react";
 import { ImageGallery } from "./ImageGallery";
 import { Id } from "../../convex/_generated/dataModel";
 import { NoteEditModal } from "./NoteEditModal";
+import { Button } from "./ui/button";
 
 interface Note {
   _id: Id<"notes">;
@@ -58,12 +59,12 @@ export function NotesList({ notes, tags }: NotesListProps) {
 
   if (notes.length === 0) {
     return (
-      <div className="text-center py-12">
-        <div className="text-gray-400 mb-4">
-          <Calendar className="w-16 h-16 mx-auto" />
+      <div className="text-center py-16">
+        <div className="text-slate-400 mb-6">
+          <Calendar className="w-20 h-20 mx-auto" />
         </div>
-        <h3 className="text-xl font-medium text-gray-600 mb-2">No notes yet</h3>
-        <p className="text-gray-500">Create your first note to get started!</p>
+        <h3 className="text-2xl font-semibold text-slate-700 mb-3">Chưa có ghi chú nào</h3>
+        <p className="text-slate-500 text-lg">Tạo ghi chú đầu tiên để bắt đầu!</p>
       </div>
     );
   }
@@ -74,23 +75,27 @@ export function NotesList({ notes, tags }: NotesListProps) {
         {notes.map((note) => (
           <div
             key={note._id}
-            className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow group"
+            className="bg-white/90 backdrop-blur-sm rounded-xl shadow-sm border border-slate-200/80 p-6 hover:shadow-lg hover:border-slate-300 transition-all duration-300 group hover:-translate-y-1"
           >
             {/* Note Header */}
             <div className="flex justify-end items-start mb-3">
               <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                <button
+                <Button
                   onClick={() => setEditingNote(note)}
-                  className="p-1.5 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded transition-colors"
+                  variant="ghost"
+                  size="sm"
+                  className="p-1.5 h-auto text-gray-400 hover:text-blue-500 hover:bg-blue-50"
                 >
                   <Edit2 className="w-4 h-4" />
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => handleDelete(note._id)}
-                  className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
+                  variant="ghost"
+                  size="sm"
+                  className="p-1.5 h-auto text-gray-400 hover:text-red-500 hover:bg-red-50"
                 >
                   <Trash2 className="w-4 h-4" />
-                </button>
+                </Button>
               </div>
             </div>
 
@@ -98,18 +103,20 @@ export function NotesList({ notes, tags }: NotesListProps) {
             {note.imageUrls && note.imageUrls.length > 0 && (
                 <div>
                   <ImageGallery imageUrls={note.imageUrls} />
-                  <button
-                    onClick={() => toast.info("AI image generation coming soon!")}
-                    className="mt-2 self-end bg-white/90 hover:bg-white text-gray-700 px-3 py-1.5 rounded-lg text-xs font-medium shadow-sm border border-gray-200 flex items-center gap-1.5 transition-colors"
+                  <Button
+                    onClick={() => toast.info("Tính năng tạo hình ảnh AI đang phát triển!")}
+                    variant="outline"
+                    size="sm"
+                    className="mt-2 self-end bg-white/90 hover:bg-white text-gray-700 px-3 py-1.5 text-xs font-medium shadow-sm flex items-center gap-1.5"
                   >
                     <Sparkles className="w-4 h-4" />
-                    Generate
-                  </button>
+                    Tạo ảnh AI
+                  </Button>
                 </div>
             )}
 
             {/* Note Content */}
-            <p className="text-gray-800 font-semibold text-lg mb-4 line-clamp-2">{note.title || note.content}</p>
+            <p className="text-slate-800 font-semibold text-lg mb-4 line-clamp-2 leading-relaxed">{note.title || note.content}</p>
 
             {/* Tags */}
             {note.tags.length > 0 && (
@@ -134,8 +141,8 @@ export function NotesList({ notes, tags }: NotesListProps) {
             )}
 
             {/* Timestamp */}
-            <div className="text-xs text-gray-400 flex items-center gap-1">
-              <Calendar className="w-3 h-3" />
+            <div className="text-xs text-slate-400 flex items-center gap-1.5">
+              <Calendar className="w-3.5 h-3.5" />
               {formatDate(note._creationTime)}
             </div>
           </div>

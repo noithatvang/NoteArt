@@ -4,6 +4,7 @@ import { api } from "../../convex/_generated/api";
 import { toast } from "sonner";
 import { Plus, Edit2, Trash2, X } from "lucide-react";
 import { Id } from "../../convex/_generated/dataModel";
+import { Button } from "./ui/button";
 
 interface Tag {
   _id: Id<"tags">;
@@ -44,9 +45,9 @@ export function TagManager({ tags, onClose }: TagManagerProps) {
       setNewTagName("");
       setNewTagColor(PRESET_COLORS[0]);
       setShowCreateForm(false);
-      toast.success("Tag created successfully!");
+      toast.success("Tạo thẻ thành công!");
     } catch (error) {
-      toast.error("Failed to create tag");
+      toast.error("Không thể tạo thẻ");
     }
   };
 
@@ -63,19 +64,19 @@ export function TagManager({ tags, onClose }: TagManagerProps) {
       setEditingTag(null);
       setNewTagName("");
       setNewTagColor(PRESET_COLORS[0]);
-      toast.success("Tag updated successfully!");
+      toast.success("Cập nhật thẻ thành công!");
     } catch (error) {
-      toast.error("Failed to update tag");
+      toast.error("Không thể cập nhật thẻ");
     }
   };
 
   const handleDelete = async (tagId: Id<"tags">) => {
-    if (confirm("Are you sure you want to delete this tag?")) {
+    if (confirm("Bạn có chắc chắn muốn xóa thẻ này?")) {
       try {
         await deleteTag({ id: tagId });
-        toast.success("Tag deleted successfully!");
+        toast.success("Xóa thẻ thành công!");
       } catch (error) {
-        toast.error("Failed to delete tag");
+        toast.error("Không thể xóa thẻ");
       }
     }
   };
@@ -94,15 +95,17 @@ export function TagManager({ tags, onClose }: TagManagerProps) {
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+    <div className="bg-white/95 backdrop-blur-sm rounded-xl shadow-lg border border-slate-200/80 p-6">
       <div className="flex justify-between items-center mb-6">
-        <h3 className="text-lg font-semibold text-gray-800">Manage Tags</h3>
-        <button
+        <h3 className="text-xl font-semibold text-slate-800">Quản lý thẻ</h3>
+        <Button
           onClick={onClose}
-          className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+          variant="ghost"
+          size="sm"
+          className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
         >
           <X className="w-5 h-5" />
-        </button>
+        </Button>
       </div>
 
       {/* Existing Tags */}
@@ -110,7 +113,7 @@ export function TagManager({ tags, onClose }: TagManagerProps) {
         {tags.map((tag) => (
           <div
             key={tag._id}
-            className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+            className="flex items-center justify-between p-3 bg-slate-50/80 rounded-lg hover:bg-slate-100/80 transition-colors border border-slate-200/60"
           >
             <div className="flex items-center gap-3">
               <div
@@ -120,18 +123,22 @@ export function TagManager({ tags, onClose }: TagManagerProps) {
               <span className="font-medium text-gray-700">{tag.name}</span>
             </div>
             <div className="flex gap-1">
-              <button
+              <Button
                 onClick={() => startEdit(tag)}
-                className="p-1.5 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded transition-colors"
+                variant="ghost"
+                size="sm"
+                className="p-1.5 text-gray-400 hover:text-blue-500"
               >
                 <Edit2 className="w-4 h-4" />
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={() => handleDelete(tag._id)}
-                className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded transition-colors"
+                variant="ghost"
+                size="sm"
+                className="p-1.5 text-gray-400 hover:text-red-500"
               >
                 <Trash2 className="w-4 h-4" />
-              </button>
+              </Button>
             </div>
           </div>
         ))}
@@ -139,14 +146,14 @@ export function TagManager({ tags, onClose }: TagManagerProps) {
 
       {/* Create/Edit Form */}
       {(showCreateForm || editingTag) && (
-        <form onSubmit={editingTag ? handleUpdate : handleCreate} className="space-y-4 p-4 bg-gray-50 rounded-lg">
+        <form onSubmit={editingTag ? handleUpdate : handleCreate} className="space-y-4 p-4 bg-slate-50/60 rounded-lg border border-slate-200/60">
           <h4 className="font-medium text-gray-700">
-            {editingTag ? "Edit Tag" : "Create New Tag"}
+            {editingTag ? "Chỉnh sửa thẻ" : "Tạo thẻ mới"}
           </h4>
           
           <input
             type="text"
-            placeholder="Tag name"
+            placeholder="Tên thẻ"
             value={newTagName}
             onChange={(e) => setNewTagName(e.target.value)}
             className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
@@ -154,14 +161,16 @@ export function TagManager({ tags, onClose }: TagManagerProps) {
           />
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Color</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Màu sắc</label>
             <div className="flex gap-2 flex-wrap">
               {PRESET_COLORS.map((color) => (
-                <button
+                <Button
                   key={color}
                   type="button"
+                  variant="ghost"
+                  size="sm"
                   onClick={() => setNewTagColor(color)}
-                  className={`w-8 h-8 rounded-full border-2 transition-all ${
+                  className={`w-8 h-8 rounded-full border-2 transition-all p-0 ${
                     newTagColor === color ? "border-gray-800 scale-110" : "border-gray-300"
                   }`}
                   style={{ backgroundColor: color }}
@@ -171,33 +180,36 @@ export function TagManager({ tags, onClose }: TagManagerProps) {
           </div>
 
           <div className="flex gap-3">
-            <button
+            <Button
               type="submit"
               disabled={!newTagName.trim()}
-              className="px-4 py-2 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white rounded-lg font-medium transition-colors"
+              variant="default"
+              className="px-4 py-2"
             >
-              {editingTag ? "Update" : "Create"}
-            </button>
-            <button
+              {editingTag ? "Cập nhật" : "Tạo"}
+            </Button>
+            <Button
               type="button"
               onClick={editingTag ? cancelEdit : () => setShowCreateForm(false)}
-              className="px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors"
+              variant="ghost"
+              className="px-4 py-2"
             >
-              Cancel
-            </button>
+              Hủy
+            </Button>
           </div>
         </form>
       )}
 
       {/* Create Button */}
       {!showCreateForm && !editingTag && (
-        <button
+        <Button
           onClick={() => setShowCreateForm(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors"
+          variant="default"
+          className="flex items-center gap-2 px-4 py-2"
         >
           <Plus className="w-4 h-4" />
-          Create New Tag
-        </button>
+          Tạo thẻ mới
+        </Button>
       )}
     </div>
   );

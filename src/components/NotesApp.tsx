@@ -5,6 +5,7 @@ import { SearchBar } from "./SearchBar";
 import { NoteForm } from "./NoteForm";
 import { NotesList } from "./NotesList";
 import { TagManager } from "./TagManager";
+import { Button } from "./ui/button";
 
 interface NotesAppProps {
   searchQuery: string;
@@ -33,12 +34,13 @@ export function NotesApp({ searchQuery, setSearchQuery }: NotesAppProps) {
       {/* Header with Tag Manager Button */}
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-semibold text-gray-800">Your Notes</h2>
-        <button
+        <Button
           onClick={() => setShowTagManager(!showTagManager)}
-          className="px-4 py-2 text-sm bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors font-medium"
+          variant={showTagManager ? "outline" : "default"}
+          className="text-sm font-medium"
         >
-          {showTagManager ? "Close" : "Manage Tags"}
-        </button>
+          {showTagManager ? "Đóng" : "Quản lý Tags"}
+        </Button>
       </div>
 
       {/* Tag Manager - Only show when button is clicked */}
