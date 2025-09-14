@@ -13,7 +13,9 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
+import type * as aiImages from "../aiImages.js";
 import type * as auth from "../auth.js";
+import type * as gemini from "../gemini.js";
 import type * as http from "../http.js";
 import type * as notes from "../notes.js";
 import type * as router from "../router.js";
@@ -28,7 +30,9 @@ import type * as tags from "../tags.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
+  aiImages: typeof aiImages;
   auth: typeof auth;
+  gemini: typeof gemini;
   http: typeof http;
   notes: typeof notes;
   router: typeof router;
