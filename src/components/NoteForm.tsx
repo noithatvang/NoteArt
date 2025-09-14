@@ -238,9 +238,9 @@ export function NoteForm({ tags }: NoteFormProps) {
           <Button
             type="submit"
             disabled={!title.trim()}
-            variant="outline"
+            variant={title.trim() ? "default" : "outline"}
             size="default"
-            className="self-start"
+            className={`self-start transition-all duration-300 ${title.trim() ? 'shadow-lg hover:shadow-xl' : ''}`}
           >
             Tạo ghi chú
           </Button>

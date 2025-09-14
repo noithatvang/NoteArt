@@ -184,20 +184,45 @@ export function ImageGallery({ imageUrls }: ImageGalleryProps) {
           return createPortal(modalContent, document.body);
         }
         // Bình thường
+        const isCurrentHovered = hoverIdx === idx;
         return (
           <div
             key={idx}
-            className="relative bg-gray-100 flex items-center justify-center transition-all duration-300"
+            className="relative bg-gray-100 flex items-center justify-center transition-all duration-300 cursor-pointer overflow-hidden"
             style={{ width: width + "px", height: height + "px", zIndex }}
             onClick={() => setActiveIdx(idx)}
+            onMouseEnter={() => handleMouseEnter(idx)}
+            onMouseLeave={() => handleMouseLeave(idx)}
           >
             <img
               src={url}
               alt={`Note attachment ${idx + 1}`}
-              className="rounded-lg border border-gray-200 w-full h-full"
+              className={`rounded-lg border border-gray-200 w-full h-full transition-all duration-500 ${
+                isCurrentHovered
+                  ? 'scale-110 brightness-110 contrast-105 shadow-xl'
+                  : 'scale-100 brightness-100 contrast-100 shadow-none'
+              }`}
               style={{ objectFit: "contain" }}
               onLoad={e => handleImgLoad(idx, e)}
             />
+
+            {/* Hover overlay with subtle gradient */}
+            <div className={`absolute inset-0 bg-gradient-to-t from-black/10 via-transparent to-white/10 transition-opacity duration-300 rounded-lg pointer-events-none ${
+              isCurrentHovered ? 'opacity-100' : 'opacity-0'
+            }`} />
+
+            {/* Hover indicator */}
+            <div className={`absolute top-2 right-2 transition-all duration-300 ${
+              isCurrentHovered
+                ? 'opacity-100 scale-100'
+                : 'opacity-0 scale-75'
+            }`}>
+              <div className="bg-white/90 backdrop-blur-sm rounded-full p-1.5 shadow-lg">
+                <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+                </svg>
+              </div>
+            </div>
           </div>
         );
       })}
