@@ -238,7 +238,7 @@ export function NoteForm({ tags }: NoteFormProps) {
           <Button
             type="submit"
             disabled={!title.trim()}
-            variant="default"
+            variant="outline"
             size="default"
             className="self-start"
           >
@@ -396,10 +396,10 @@ export function NoteForm({ tags }: NoteFormProps) {
             type="button"
             variant="outline"
             size="default"
-            className="flex items-center gap-2 bg-green-50 hover:bg-green-100 border-green-200"
+            className="flex items-center gap-2"
             onClick={handleGoogleDriveClick}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="20" height="20"><path fill="#2196F3" d="M17.7 8.1L24 19.1 30.3 8.1z"/><path fill="#4CAF50" d="M6 40h36l-6-10H12z"/><path fill="#FFC107" d="M41.7 38.1L30.3 8.1 24 19.1z"/><path fill="#FF3D00" d="M6.3 38.1L17.7 8.1 24 19.1z"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="16" height="16"><path fill="#2196F3" d="M17.7 8.1L24 19.1 30.3 8.1z"/><path fill="#4CAF50" d="M6 40h36l-6-10H12z"/><path fill="#FFC107" d="M41.7 38.1L30.3 8.1 24 19.1z"/><path fill="#FF3D00" d="M6.3 38.1L17.7 8.1 24 19.1z"/></svg>
             Google Drive
           </Button>
           {/* Camera Button */}
@@ -407,10 +407,10 @@ export function NoteForm({ tags }: NoteFormProps) {
             type="button"
             variant="outline"
             size="default"
-            className="flex items-center gap-2 bg-pink-50 hover:bg-pink-100 border-pink-200"
+            className="flex items-center gap-2"
             onClick={handleCameraClick}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20"><path fill="#E91E63" d="M12 17a4.978 4.978 0 0 1-4.9-4H5a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1h2.1l.83-1.66A1 1 0 0 1 8.83 5h6.34a1 1 0 0 1 .9.34L17.9 7H20a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1h-2.1a4.978 4.978 0 0 1-4.9 4zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16"><path fill="currentColor" d="M12 17a4.978 4.978 0 0 1-4.9-4H5a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1h2.1l.83-1.66A1 1 0 0 1 8.83 5h6.34a1 1 0 0 1 .9.34L17.9 7H20a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1h-2.1a4.978 4.978 0 0 1-4.9 4zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg>
             Máy ảnh
           </Button>
 

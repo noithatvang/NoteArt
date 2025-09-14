@@ -1,4 +1,5 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 
 interface ImageGalleryProps {
   imageUrls: (string | null)[];
@@ -108,11 +109,21 @@ export function ImageGallery({ imageUrls }: ImageGalleryProps) {
             imgWidth = maxW;
             imgHeight = imgWidth * (naturalH / naturalW);
           }
-          return (
+
+          const modalContent = (
             <div
               key={"zoom-"+idx}
               className="fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black/80 transition-all duration-300 overflow-auto"
-              style={{ zIndex: 9999, cursor: draggingRef.current ? 'grabbing' : 'grab' }}
+              style={{
+                zIndex: 2147483647,
+                cursor: draggingRef.current ? 'grabbing' : 'grab',
+                position: 'fixed',
+                top: '0 !important',
+                left: '0 !important',
+                width: '100vw !important',
+                height: '100vh !important',
+                isolation: 'isolate'
+              }}
               onClick={handleZoomClose}
             >
               <img
@@ -127,6 +138,8 @@ export function ImageGallery({ imageUrls }: ImageGalleryProps) {
               />
             </div>
           );
+
+          return createPortal(modalContent, document.body);
         }
         if (activeIdx === idx) {
           let naturalW = dimensions[idx]?.w || 600;
@@ -142,11 +155,20 @@ export function ImageGallery({ imageUrls }: ImageGalleryProps) {
               imgWidth = imgHeight * (naturalW / naturalH);
             }
           }
-          return (
+
+          const modalContent = (
             <div
               key={"active-"+idx}
               className="fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black/70 transition-all duration-300"
-              style={{ zIndex: 9999 }}
+              style={{
+                zIndex: 2147483646,
+                position: 'fixed',
+                top: '0 !important',
+                left: '0 !important',
+                width: '100vw !important',
+                height: '100vh !important',
+                isolation: 'isolate'
+              }}
               onClick={() => setActiveIdx(null)}
             >
               <img
@@ -158,6 +180,8 @@ export function ImageGallery({ imageUrls }: ImageGalleryProps) {
               />
             </div>
           );
+
+          return createPortal(modalContent, document.body);
         }
         // Bình thường
         return (

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { NotesApp } from "./NotesApp";
 import { Sidebar } from "./modern-side-bar";
 
@@ -8,12 +8,28 @@ interface HomePageProps {
 }
 
 export function HomePage({ searchQuery, setSearchQuery }: HomePageProps) {
+  const mainContentRef = useRef<HTMLDivElement>(null);
+
+  // Handle click outside sidebar to clear search
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (mainContentRef.current && mainContentRef.current.contains(event.target as Node) && searchQuery) {
+        setSearchQuery('');
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [searchQuery, setSearchQuery]);
+
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden">
       <Sidebar searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-h-0">
+      <div ref={mainContentRef} className="flex-1 flex flex-col min-h-0">
         {/* Mobile top padding for hamburger button */}
         <div className="lg:hidden h-16" />
 

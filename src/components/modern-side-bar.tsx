@@ -182,8 +182,26 @@ export function Sidebar({ className = "", searchQuery = "", setSearchQuery }: Si
                 placeholder="Tìm kiếm notes..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery?.(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 hover:bg-white hover:shadow-sm"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    // Enter sẽ blur input và trigger search
+                    e.preventDefault();
+                    (e.target as HTMLInputElement).blur();
+                  }
+                }}
+                className="w-full pl-10 pr-10 py-2 bg-slate-50 border border-slate-200 rounded-lg text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-300 transition-all duration-300 hover:bg-white hover:shadow-sm"
               />
+              {/* Clear button */}
+              {searchQuery && (
+                <Button
+                  onClick={() => setSearchQuery?.('')}
+                  variant="ghost"
+                  size="sm"
+                  className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 text-slate-400 hover:text-slate-600 hover:bg-slate-200 rounded-full"
+                >
+                  <X className="h-3 w-3" />
+                </Button>
+              )}
             </div>
           </div>
         )}

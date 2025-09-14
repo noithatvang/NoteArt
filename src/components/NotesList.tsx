@@ -75,7 +75,7 @@ export function NotesList({ notes, tags }: NotesListProps) {
         {notes.map((note) => (
           <div
             key={note._id}
-            className="bg-white/90 backdrop-blur-sm rounded-xl shadow-sm border border-slate-200/80 p-6 hover:shadow-lg hover:border-slate-300 transition-all duration-300 group hover:-translate-y-1"
+            className="bg-white/90 backdrop-blur-sm rounded-xl shadow-sm border border-slate-200/80 p-6 hover:shadow-lg hover:border-slate-300 transition-all duration-300 group hover:-translate-y-1 flex flex-col"
           >
             {/* Note Header */}
             <div className="flex justify-end items-start mb-3">
@@ -101,49 +101,61 @@ export function NotesList({ notes, tags }: NotesListProps) {
 
             {/* Note Image */}
             {note.imageUrls && note.imageUrls.length > 0 && (
-                <div>
-                  <ImageGallery imageUrls={note.imageUrls} />
+              <div className="mb-4">
+                <ImageGallery imageUrls={note.imageUrls} />
+                <div className="flex justify-end mt-2">
                   <Button
                     onClick={() => toast.info("Tính năng tạo hình ảnh AI đang phát triển!")}
                     variant="outline"
                     size="sm"
-                    className="mt-2 self-end bg-white/90 hover:bg-white text-gray-700 px-3 py-1.5 text-xs font-medium shadow-sm flex items-center gap-1.5"
+                    className="bg-white/90 hover:bg-white text-gray-700 px-3 py-1.5 text-xs font-medium shadow-sm flex items-center gap-1.5"
                   >
                     <Sparkles className="w-4 h-4" />
                     Tạo ảnh AI
                   </Button>
                 </div>
-            )}
-
-            {/* Note Content */}
-            <p className="text-slate-800 font-semibold text-lg mb-4 line-clamp-2 leading-relaxed">{note.title || note.content}</p>
-
-            {/* Tags */}
-            {note.tags.length > 0 && (
-              <div className="flex gap-1.5 flex-wrap mb-4">
-                {note.tags.map((tagName) => {
-                  const tag = tags.find((t) => t.name === tagName);
-                  return (
-                    <span
-                      key={tagName}
-                      className="px-2 py-1 rounded-full text-xs font-medium"
-                      style={{
-                        backgroundColor: tag?.color + "20" || "#f3f4f6",
-                        color: tag?.color || "#6b7280",
-                        border: `1px solid ${tag?.color || "#d1d5db"}`,
-                      }}
-                    >
-                      {tagName}
-                    </span>
-                  );
-                })}
               </div>
             )}
 
-            {/* Timestamp */}
-            <div className="text-xs text-slate-400 flex items-center gap-1.5">
-              <Calendar className="w-3.5 h-3.5" />
-              {formatDate(note._creationTime)}
+            {/* Note Content - Flex grow to push footer down */}
+            <div className="flex-1 flex flex-col">
+              <p className="text-slate-800 font-semibold text-lg mb-4 line-clamp-2 leading-relaxed">{note.title || note.content}</p>
+
+              {/* Tags Section - Push to bottom of content area */}
+              <div className="mt-auto">
+                {note.tags.length > 0 && (
+                  <div className="flex gap-1.5 flex-wrap mb-4 min-h-[28px]">
+                    {note.tags.map((tagName) => {
+                      const tag = tags.find((t) => t.name === tagName);
+                      return (
+                        <span
+                          key={tagName}
+                          className="px-2 py-1 rounded-full text-xs font-medium"
+                          style={{
+                            backgroundColor: tag?.color + "20" || "#f3f4f6",
+                            color: tag?.color || "#6b7280",
+                            border: `1px solid ${tag?.color || "#d1d5db"}`,
+                          }}
+                        >
+                          {tagName}
+                        </span>
+                      );
+                    })}
+                  </div>
+                )}
+                {/* Reserved space for cards without tags */}
+                {note.tags.length === 0 && (
+                  <div className="mb-4 min-h-[28px]"></div>
+                )}
+              </div>
+            </div>
+
+            {/* Footer - Timestamp always at bottom */}
+            <div className="mt-auto pt-2 border-t border-slate-100">
+              <div className="text-xs text-slate-400 flex items-center gap-1.5">
+                <Calendar className="w-3.5 h-3.5" />
+                {formatDate(note._creationTime)}
+              </div>
             </div>
           </div>
         ))}

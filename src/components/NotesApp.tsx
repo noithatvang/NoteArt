@@ -36,7 +36,7 @@ export function NotesApp({ searchQuery, setSearchQuery }: NotesAppProps) {
         <h2 className="text-2xl font-semibold text-gray-800">Your Notes</h2>
         <Button
           onClick={() => setShowTagManager(!showTagManager)}
-          variant={showTagManager ? "outline" : "default"}
+          variant="outline"
           className="text-sm font-medium"
         >
           {showTagManager ? "Đóng" : "Quản lý Tags"}
