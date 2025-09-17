@@ -2,7 +2,8 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { toast } from "sonner";
-import { X, Plus } from "lucide-react";
+import { X, Plus, Save, RotateCcw } from "lucide-react";
+import { Button } from "./ui/button";
 import { Id } from "../../convex/_generated/dataModel";
 
 interface SimpleNote {
@@ -205,212 +206,261 @@ export function SimpleNoteEditModal({ note, tags, onClose }: SimpleNoteEditModal
     console.log('SimpleNoteEditModal: About to render UI');
 
     return (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-        <div className="bg-white rounded-xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-          <div className="p-6">
-            {/* Header */}
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-xl font-semibold text-gray-800">Edit Note (Simple)</h2>
-              <button
-                onClick={onClose}
-                className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+        {/* Header */}
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-xl font-semibold text-gray-800">Chỉnh sửa ghi chú</h2>
+          <Button
+            onClick={onClose}
+            variant="ghost"
+            size="sm"
+            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100"
+          >
+            <X className="w-5 h-5" />
+          </Button>
+        </div>
 
-            {/* Form */}
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Title Input */}
-              <input
-                type="text"
-                placeholder="Tiêu đề..."
-                value={title}
-                onChange={e => setTitle(e.target.value)}
-                required
-                className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
-              />
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Main Input Fields */}
+          <div className="space-y-4">
+            {/* Title Input */}
+            <input
+              type="text"
+              placeholder="Tiêu đề ghi chú..."
+              value={title}
+              onChange={e => setTitle(e.target.value)}
+              required
+              className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all text-lg font-medium"
+            />
 
-              {/* Description Input */}
-              <textarea
-                placeholder="Nhập mô tả kỹ hơn nếu muốn"
-                value={desc}
-                onChange={e => setDesc(e.target.value)}
-                rows={4}
-                className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all resize-y"
-              />
+            {/* Description Input */}
+            <textarea
+              placeholder="Mô tả chi tiết (tùy chọn)..."
+              value={desc}
+              onChange={e => setDesc(e.target.value)}
+              rows={3}
+              className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all resize-none"
+            />
 
-              {/* Content Input */}
-              <textarea
-                placeholder="Nội dung..."
-                value={content}
-                onChange={e => setContent(e.target.value)}
-                rows={8}
-                className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all resize-y"
-              />
+            {/* Content Input */}
+            <textarea
+              placeholder="Nội dung ghi chú..."
+              value={content}
+              onChange={e => setContent(e.target.value)}
+              rows={6}
+              className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all resize-none"
+            />
+          </div>
 
-              {/* Tags Section */}
-              <div className="border-t pt-4">
-                <div className="flex justify-between items-center mb-3">
-                  <h4 className="font-medium text-gray-700">Thẻ:</h4>
-                  <button
-                    type="button"
-                    onClick={openCreateTagForm}
-                    disabled={showCreateTag || editingTag}
-                    className="flex items-center gap-2 px-3 py-1 bg-blue-100 hover:bg-blue-200 disabled:bg-gray-100 disabled:text-gray-400 text-blue-700 rounded-lg text-sm font-medium transition-colors"
+          {/* Action Buttons Row */}
+          <div className="flex gap-2 items-center pt-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setShowCreateTag(true)}
+              disabled={showCreateTag || editingTag}
+              className="flex items-center gap-2 hover:bg-blue-50 hover:border-blue-300"
+            >
+              <Plus className="w-4 h-4" />
+              Quản lý thẻ
+            </Button>
+
+            <div className="flex-1" />
+
+            <Button
+              type="button"
+              onClick={onClose}
+              variant="outline"
+              size="sm"
+              className="flex items-center gap-2 text-gray-600 hover:text-gray-800"
+            >
+              <RotateCcw className="w-4 h-4" />
+              Hủy
+            </Button>
+
+            <Button
+              type="submit"
+              disabled={!title.trim()}
+              variant="default"
+              size="sm"
+              className={`flex items-center gap-2 transition-all duration-300 ${title.trim() ? 'shadow-lg hover:shadow-xl' : ''}`}
+            >
+              <Save className="w-4 h-4" />
+              Lưu thay đổi
+            </Button>
+          </div>
+
+          {/* Selected Tags Display */}
+          {selectedTags.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {selectedTags.map(tagName => {
+                const tag = tags.find(t => t.name === tagName);
+                return tag ? (
+                  <span
+                    key={tag._id}
+                    className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium border"
+                    style={{
+                      backgroundColor: tag.color + '15',
+                      borderColor: tag.color + '40',
+                      color: tag.color
+                    }}
                   >
-                    <Plus className="w-4 h-4" />
-                    Tạo thẻ mới
-                  </button>
-                </div>
+                    {tag.name}
+                    <button
+                      type="button"
+                      onClick={() => toggleTag(tag.name)}
+                      className="hover:bg-black hover:bg-opacity-10 rounded-full p-0.5"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </span>
+                ) : null;
+              })}
+            </div>
+          )}
 
-                {/* Create/Edit Tag Form */}
-                {(showCreateTag || editingTag) && (
-                  <form onSubmit={editingTag ? handleUpdateTag : handleCreateTag} className="mb-4 p-4 bg-gray-50 rounded-lg border">
-                    <div className="space-y-3">
-                      <h5 className="font-medium text-gray-700">
-                        {editingTag ? "Chỉnh sửa thẻ" : "Tạo thẻ mới"}
-                      </h5>
+          {/* Tags Management Section */}
+          {(showCreateTag || editingTag) && (
+            <div className="border-t pt-4">
+              <h4 className="font-medium text-gray-700 mb-3">
+                {editingTag ? "Chỉnh sửa thẻ" : "Tạo thẻ mới"}
+              </h4>
 
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Tên thẻ
-                        </label>
-                        <input
-                          ref={tagInputRef}
-                          type="text"
-                          value={newTagName}
-                          onChange={(e) => setNewTagName(e.target.value)}
-                          placeholder="Nhập tên thẻ..."
-                          className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none text-sm transition-all"
-                          required
-                        />
-                      </div>
+              {/* Create/Edit Tag Form */}
+              <form onSubmit={editingTag ? handleUpdateTag : handleCreateTag} className="mb-4 p-4 bg-gray-50 rounded-lg border">
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Tên thẻ
+                    </label>
+                    <input
+                      ref={tagInputRef}
+                      type="text"
+                      value={newTagName}
+                      onChange={(e) => setNewTagName(e.target.value)}
+                      placeholder="Nhập tên thẻ..."
+                      className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none text-sm transition-all"
+                      required
+                    />
+                  </div>
 
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Màu sắc
-                        </label>
-                        <div className="flex gap-2 flex-wrap">
-                          {PRESET_COLORS.map((color) => (
-                            <button
-                              key={color}
-                              type="button"
-                              onClick={() => setNewTagColor(color)}
-                              className={`w-6 h-6 rounded-full border-2 transition-all ${
-                                newTagColor === color ? "border-gray-800 scale-110" : "border-gray-300"
-                              }`}
-                              style={{ backgroundColor: color }}
-                            />
-                          ))}
-                        </div>
-                      </div>
-
-                      <div className="flex gap-2 justify-end">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Màu sắc
+                    </label>
+                    <div className="flex gap-2 flex-wrap">
+                      {PRESET_COLORS.map((color) => (
                         <button
+                          key={color}
                           type="button"
-                          onClick={editingTag ? cancelTagEdit : () => {
-                            setShowCreateTag(false);
-                            setNewTagName("");
-                            setNewTagColor(PRESET_COLORS[0]);
-                          }}
-                          className="px-3 py-1 text-gray-600 hover:text-gray-800 text-sm transition-colors"
-                        >
-                          Hủy
-                        </button>
-                        <button
-                          type="submit"
-                          disabled={!newTagName.trim()}
-                          className="px-4 py-1 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white rounded text-sm font-medium transition-colors"
-                        >
-                          {editingTag ? "Cập nhật" : "Tạo"}
-                        </button>
-                        {editingTag && (
-                          <button
-                            type="button"
-                            onClick={finishTagEdit}
-                            className="px-3 py-1 bg-green-500 hover:bg-green-600 text-white text-sm font-medium rounded transition-colors"
-                          >
-                            Xong
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  </form>
-                )}
-
-                {/* Existing Tags */}
-                <div className="space-y-2">
-                  <h5 className="text-sm font-medium text-gray-700">Thẻ có sẵn:</h5>
-                  <div className="flex gap-2 flex-wrap">
-                    {tags.map(tag => (
-                      <div key={tag._id} className="relative group">
-                        <button
-                          type="button"
-                          onClick={() => toggleTag(tag.name)}
-                          className={`px-3 py-1 pr-8 rounded-full text-sm font-medium transition-all ${
-                            selectedTags.includes(tag.name)
-                              ? "ring-2 ring-offset-1"
-                              : "hover:scale-105"
+                          onClick={() => setNewTagColor(color)}
+                          className={`w-6 h-6 rounded-full border-2 transition-all ${
+                            newTagColor === color ? "border-gray-800 scale-110" : "border-gray-300"
                           }`}
-                          style={{
-                            backgroundColor: tag.color + "20",
-                            color: tag.color,
-                            border: `1px solid ${tag.color}`,
-                          }}
-                        >
-                          {tag.name}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => startEditTag(tag)}
-                          className="absolute right-1 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 w-5 h-5 text-gray-400 hover:text-blue-500 transition-all"
-                          title="Chỉnh sửa thẻ"
-                        >
-                          ✏️
-                        </button>
-                      </div>
-                    ))}
+                          style={{ backgroundColor: color }}
+                        />
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="flex gap-2 justify-end">
+                    <Button
+                      type="button"
+                      onClick={editingTag ? cancelTagEdit : () => {
+                        setShowCreateTag(false);
+                        setNewTagName("");
+                        setNewTagColor(PRESET_COLORS[0]);
+                      }}
+                      variant="outline"
+                      size="sm"
+                    >
+                      Hủy
+                    </Button>
+                    <Button
+                      type="submit"
+                      disabled={!newTagName.trim()}
+                      variant="default"
+                      size="sm"
+                    >
+                      {editingTag ? "Cập nhật" : "Tạo"}
+                    </Button>
+                    {editingTag && (
+                      <Button
+                        type="button"
+                        onClick={finishTagEdit}
+                        variant="default"
+                        size="sm"
+                        className="bg-green-500 hover:bg-green-600"
+                      >
+                        Xong
+                      </Button>
+                    )}
                   </div>
                 </div>
-              </div>
+              </form>
 
-              {/* Submit Buttons */}
-              <div className="flex gap-3 justify-end pt-4">
-                <button
-                  type="button"
-                  onClick={onClose}
-                  className="px-6 py-2 text-gray-600 hover:text-gray-800 transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  disabled={!title.trim()}
-                  className="px-6 py-2 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white rounded-lg font-medium transition-colors"
-                >
-                  Update Note
-                </button>
+              {/* Existing Tags */}
+              <div className="space-y-2">
+                <h5 className="text-sm font-medium text-gray-700">Chọn thẻ từ danh sách:</h5>
+                <div className="flex gap-2 flex-wrap">
+                  {tags.map(tag => (
+                    <div key={tag._id} className="relative group">
+                      <button
+                        type="button"
+                        onClick={() => toggleTag(tag.name)}
+                        className={`px-3 py-1 pr-8 rounded-full text-sm font-medium transition-all ${
+                          selectedTags.includes(tag.name)
+                            ? "ring-2 ring-offset-1 shadow-sm"
+                            : "hover:scale-105"
+                        }`}
+                        style={{
+                          backgroundColor: selectedTags.includes(tag.name)
+                            ? tag.color + "25"
+                            : tag.color + "10",
+                          color: tag.color,
+                          border: `1px solid ${tag.color}`,
+                        }}
+                      >
+                        {tag.name}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => startEditTag(tag)}
+                        className="absolute right-1 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 w-5 h-5 text-gray-400 hover:text-blue-500 transition-all"
+                        title="Chỉnh sửa thẻ"
+                      >
+                        ✏️
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                {tags.length === 0 && (
+                  <p className="text-gray-500 text-sm">Chưa có thẻ nào. Hãy tạo thẻ mới ở trên.</p>
+                )}
               </div>
-            </form>
-          </div>
-        </div>
+            </div>
+          )}
+        </form>
       </div>
     );
   } catch (error) {
     console.error('SimpleNoteEditModal: Error rendering:', error);
     return (
-      <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-        <div className="bg-white rounded-xl shadow-xl max-w-md w-full p-6">
-          <h2 className="text-xl font-semibold text-red-600 mb-4">Simple Modal Error</h2>
-          <p className="text-gray-600 mb-4">Error: {error instanceof Error ? error.message : 'Unknown error'}</p>
-          <button
-            onClick={onClose}
-            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            Close
-          </button>
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-6">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold text-red-600">Lỗi chỉnh sửa ghi chú</h2>
+          <Button onClick={onClose} variant="ghost" size="sm">
+            <X className="w-5 h-5" />
+          </Button>
         </div>
+        <p className="text-gray-600 mb-4">
+          Đã xảy ra lỗi: {error instanceof Error ? error.message : 'Lỗi không xác định'}
+        </p>
+        <Button onClick={onClose} variant="default">
+          Đóng
+        </Button>
       </div>
     );
   }

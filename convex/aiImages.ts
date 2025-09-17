@@ -71,7 +71,7 @@ export const removeAiImageFromNote = mutation({
     }
 
     // Remove image at specified index
-    const updatedAiImages = currentAiImages.filter((_, index) => index !== imageIndex);
+    const updatedAiImages = currentAiImages.filter((_: any, index: number) => index !== imageIndex);
 
     await ctx.db.patch(noteId, {
       aiGeneratedImages: updatedAiImages,

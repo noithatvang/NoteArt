@@ -11,6 +11,17 @@ const applicationTables = {
   imageIds: v.optional(v.array(v.id("_storage"))),
   tags: v.array(v.string()),
   userId: v.id("users"),
+  aiGeneratedImages: v.optional(v.array(v.object({
+    url: v.string(),
+    prompt: v.string(),
+    generatedAt: v.string(),
+    provider: v.string(),
+    metadata: v.optional(v.object({
+      size: v.optional(v.string()),
+      quality: v.optional(v.string()),
+      style: v.optional(v.string()),
+    })),
+  }))),
   })
     .index("by_user", ["userId"])
     .searchIndex("search_content", {

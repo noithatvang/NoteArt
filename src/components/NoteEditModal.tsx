@@ -30,70 +30,6 @@ interface NoteEditModalProps {
 }
 
 export function NoteEditModal({ note, tags, onClose }: NoteEditModalProps) {
-  // Google Drive Picker
-  const handleGoogleDriveClick = async () => {
-    window.open("https://drive.google.com/drive/my-drive", "_blank");
-    toast.info("Vui lòng tải ảnh về từ Google Drive và chọn lại bằng nút Add Image. Để tích hợp trực tiếp, cần cấu hình Google Picker API.");
-  };
-
-  // Camera capture UI
-  const handleCameraClick = async () => {
-    if (!('mediaDevices' in navigator)) {
-      toast.error("Trình duyệt không hỗ trợ camera");
-      return;
-    }
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      const modal = document.createElement('div');
-      modal.style.position = 'fixed';
-      modal.style.top = '0';
-      modal.style.left = '0';
-      modal.style.width = '100vw';
-      modal.style.height = '100vh';
-      modal.style.background = 'rgba(0,0,0,0.7)';
-      modal.style.zIndex = '9999';
-      modal.style.display = 'flex';
-      modal.style.alignItems = 'center';
-      modal.style.justifyContent = 'center';
-      modal.innerHTML = `
-        <div style="background:#fff;padding:24px;border-radius:16px;box-shadow:0 2px 16px #0002;text-align:center;max-width:90vw;">
-          <video id="camera-video" autoplay playsinline style="width:400px;height:300px;border-radius:12px;"></video>
-          <br/>
-          <button id="camera-capture" style="margin:16px 8px 0 0;padding:8px 24px;border-radius:8px;background:#1976d2;color:#fff;font-weight:bold;border:none;">Chụp ảnh</button>
-          <button id="camera-cancel" style="margin:16px 0 0 8px;padding:8px 24px;border-radius:8px;background:#eee;color:#333;font-weight:bold;border:none;">Đóng</button>
-        </div>
-      `;
-      document.body.appendChild(modal);
-      const video = modal.querySelector('#camera-video') as HTMLVideoElement;
-      video.srcObject = stream;
-      video.play();
-      modal.querySelector('#camera-cancel')?.addEventListener('click', () => {
-        stream.getTracks().forEach(track => track.stop());
-        document.body.removeChild(modal);
-      });
-      modal.querySelector('#camera-capture')?.addEventListener('click', () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = video.videoWidth || 400;
-        canvas.height = video.videoHeight || 300;
-        canvas.getContext('2d')?.drawImage(video, 0, 0, canvas.width, canvas.height);
-        canvas.toBlob(blob => {
-          if (blob) {
-            const file = new File([blob], `photo_${Date.now()}.png`, { type: 'image/png' });
-            setSelectedImages(prev => [...prev, file]);
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-              setImagePreviews(prev => [...prev, ev.target?.result as string]);
-            };
-            reader.readAsDataURL(file);
-          }
-        }, 'image/png');
-        stream.getTracks().forEach(track => track.stop());
-        document.body.removeChild(modal);
-      });
-    } catch (err) {
-      toast.error("Không thể truy cập camera");
-    }
-  };
   const [title, setTitle] = useState(note.title ?? "");
   const [desc, setDesc] = useState(note.description ?? "");
   const [content, setContent] = useState(note.content ?? "");
@@ -313,24 +249,6 @@ export function NoteEditModal({ note, tags, onClose }: NoteEditModalProps) {
               >
                 <Upload className="w-4 h-4" />
                 {imageIds.length + selectedImages.length >= 5 ? "Max 5 Images" : "Add Image"}
-              </button>
-              {/* Google Drive Button */}
-              <button
-                type="button"
-                className="flex items-center gap-2 px-4 py-2 bg-green-100 hover:bg-green-200 rounded-lg transition-colors"
-                onClick={handleGoogleDriveClick}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="20" height="20"><path fill="#2196F3" d="M17.7 8.1L24 19.1 30.3 8.1z"/><path fill="#4CAF50" d="M6 40h36l-6-10H12z"/><path fill="#FFC107" d="M41.7 38.1L30.3 8.1 24 19.1z"/><path fill="#FF3D00" d="M6.3 38.1L17.7 8.1 24 19.1z"/></svg>
-                Google Drive
-              </button>
-              {/* Camera Button */}
-              <button
-                type="button"
-                className="flex items-center gap-2 px-4 py-2 bg-pink-100 hover:bg-pink-200 rounded-lg transition-colors"
-                onClick={handleCameraClick}
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20"><path fill="#E91E63" d="M12 17a4.978 4.978 0 0 1-4.9-4H5a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1h2.1l.83-1.66A1 1 0 0 1 8.83 5h6.34a1 1 0 0 1 .9.34L17.9 7H20a1 1 0 0 1 1 1v4a1 1 0 0 1-1 1h-2.1a4.978 4.978 0 0 1-4.9 4zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/></svg>
-                Camera
               </button>
 
               {/* Selected Tags Display */}

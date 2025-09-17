@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { NotesApp } from "./NotesApp";
+import { SimpleNotesApp } from "./SimpleNotesApp";
 import { Sidebar } from "./modern-side-bar";
 
 interface HomePageProps {
@@ -36,7 +36,7 @@ export function HomePage({ searchQuery, setSearchQuery }: HomePageProps) {
         {/* Content Container sát sidebar */}
         <div className="flex-1 overflow-y-auto">
           <div className="px-6 py-6 lg:px-8 lg:py-8">
-            <NotesApp searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
+            <SimpleNotesApp searchQuery={searchQuery} />
           </div>
         </div>
       </div>

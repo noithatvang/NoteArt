@@ -31,72 +31,6 @@ export function NoteForm({ tags }: NoteFormProps) {
       gapi: any;
     }
   }
-  // Google Drive Picker
-  const GOOGLE_CLIENT_ID = "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"; // TODO: Thay bằng clientId thật
-  const GOOGLE_API_KEY = "YOUR_GOOGLE_API_KEY"; // TODO: Thay bằng apiKey thật
-  const handleGoogleDriveClick = async () => {
-    window.open("https://drive.google.com/drive/my-drive", "_blank");
-    toast.info("Vui lòng tải ảnh về từ Google Drive và chọn lại bằng nút Add Image. Để tích hợp trực tiếp, cần cấu hình Google Picker API.");
-  };
-
-  // Camera capture UI
-  const handleCameraClick = async () => {
-    if (!('mediaDevices' in navigator)) {
-      toast.error("Trình duyệt không hỗ trợ camera");
-      return;
-    }
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      const modal = document.createElement('div');
-      modal.style.position = 'fixed';
-      modal.style.top = '0';
-      modal.style.left = '0';
-      modal.style.width = '100vw';
-      modal.style.height = '100vh';
-      modal.style.background = 'rgba(0,0,0,0.7)';
-      modal.style.zIndex = '9999';
-      modal.style.display = 'flex';
-      modal.style.alignItems = 'center';
-      modal.style.justifyContent = 'center';
-      modal.innerHTML = `
-        <div style="background:#fff;padding:24px;border-radius:16px;box-shadow:0 2px 16px #0002;text-align:center;max-width:90vw;">
-          <video id="camera-video" autoplay playsinline style="width:400px;height:300px;border-radius:12px;"></video>
-          <br/>
-          <button id="camera-capture" style="margin:16px 8px 0 0;padding:8px 24px;border-radius:8px;background:#1976d2;color:#fff;font-weight:bold;border:none;">Chụp ảnh</button>
-          <button id="camera-cancel" style="margin:16px 0 0 8px;padding:8px 24px;border-radius:8px;background:#eee;color:#333;font-weight:bold;border:none;">Đóng</button>
-        </div>
-      `;
-      document.body.appendChild(modal);
-      const video = modal.querySelector('#camera-video') as HTMLVideoElement;
-      video.srcObject = stream;
-      video.play();
-      modal.querySelector('#camera-cancel')?.addEventListener('click', () => {
-        stream.getTracks().forEach(track => track.stop());
-        document.body.removeChild(modal);
-      });
-      modal.querySelector('#camera-capture')?.addEventListener('click', () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = video.videoWidth || 400;
-        canvas.height = video.videoHeight || 300;
-        canvas.getContext('2d')?.drawImage(video, 0, 0, canvas.width, canvas.height);
-        canvas.toBlob(blob => {
-          if (blob) {
-            const file = new File([blob], `photo_${Date.now()}.png`, { type: 'image/png' });
-            setSelectedImages(prev => [...prev, file]);
-            const reader = new FileReader();
-            reader.onload = (ev) => {
-              setImagePreviews(prev => [...prev, ev.target?.result as string]);
-            };
-            reader.readAsDataURL(file);
-          }
-        }, 'image/png');
-        stream.getTracks().forEach(track => track.stop());
-        document.body.removeChild(modal);
-      });
-    } catch (err) {
-      toast.error("Không thể truy cập camera");
-    }
-  };
   const [title, setTitle] = useState("");
   const [showDesc, setShowDesc] = useState(false);
   const [desc, setDesc] = useState("");
@@ -462,6 +396,16 @@ export function NoteForm({ tags }: NoteFormProps) {
                   {tag.name}
                 </Button>
               ))}
+            </div>
+          </div>
+        )}
+        {/* Drag & Drop Overlay */}
+        {dragActive && (
+          <div className="absolute inset-0 bg-blue-100 bg-opacity-80 border-2 border-dashed border-blue-400 rounded-xl flex items-center justify-center z-10">
+            <div className="text-center">
+              <ImagePlus className="w-12 h-12 text-blue-500 mx-auto mb-2" />
+              <p className="text-blue-700 font-medium">Thả ảnh vào đây</p>
+              <p className="text-blue-600 text-sm">Hỗ trợ: JPG, PNG, GIF, WEBP (tối đa 5MB)</p>
             </div>
           </div>
         )}
